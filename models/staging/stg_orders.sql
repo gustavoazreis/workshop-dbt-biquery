@@ -1,47 +1,47 @@
 -- models/staging/stg_orders.sql
 
-with
+WITH
 
-source_2023 as (
-    select * from {{ source('ecom', 'raw_orders_2023') }}
+source_2023 AS (
+    SELECT * FROM {{ source('ecom', 'raw_orders_2023') }}
 ),
 
-source_2024 as (
-    select * from {{ source('ecom', 'raw_orders_2024') }}
+source_2024 AS (
+    SELECT * FROM {{ source('ecom', 'raw_orders_2024') }}
 ),
 
-combined_sources as (
-    select * from source_2023
-    union all
-    select * from source_2024
+combined_sources AS (
+    SELECT * FROM source_2023
+    UNION ALL
+    SELECT * FROM source_2024
 ),
 
-renamed as (
+renamed AS (
 
-    select
+    SELECT
 
         ----------  ids
-        id as order_id,
-        store_id as location_id,
-        customer as customer_id,
+        id AS order_id,
+        store_id AS location_id,
+        customer AS customer_id,
 
         ---------- numerics
-        subtotal as subtotal_cents,
-        tax_paid as tax_paid_cents,
-        order_total as order_total_cents,
+        subtotal AS subtotal_cents,
+        tax_paid AS tax_paid_cents,
+        order_total AS order_total_cents,
         -- Substituição manual do cents_to_dollars
-        {{ cents_to_dollars('subtotal') }} as subtotal,
+        {{ cents_to_dollars('subtotal') }} AS subtotal,
         -- Substituição manual do cents_to_dollars
-        {{ cents_to_dollars('tax_paid') }} as tax_paid,
+        {{ cents_to_dollars('tax_paid') }} AS tax_paid,
         -- Substituição manual do cents_to_dollars
-        {{ cents_to_dollars('order_total') }} as order_total,
+        {{ cents_to_dollars('order_total') }} AS order_total,
 
         ---------- timestamps
         -- Substituição manual do dbt.date_trunc
-        date_trunc(ordered_at, day) as ordered_at
+        date_trunc(ordered_at, DAY) AS ordered_at
 
-    from combined_sources
+    FROM combined_sources
 
 )
 
-select * from renamed
+SELECT * FROM renamed

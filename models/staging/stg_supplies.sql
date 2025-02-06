@@ -1,33 +1,33 @@
-with
+WITH
 
-source as (
+source AS (
 
-    select * from {{ source('ecom', 'raw_supplies') }}
+    SELECT * FROM {{ source('ecom', 'raw_supplies') }}
 
 ),
 
-renamed as (
+renamed AS (
 
-    select
+    SELECT
 
         ----------  ids
         -- Substituição manual do generate_surrogate_key
-        id as supply_id,
-        sku as product_id,
-        name as supply_name,
+        id AS supply_id,
+        sku AS product_id,
+        name AS supply_name,
 
         ---------- text
-        perishable as is_perishable_supply,
+        perishable AS is_perishable_supply,
 
         ---------- numerics
         -- Substituição manual do cents_to_dollars
-        CONCAT(id, '-', sku) as supply_uuid,
+        CONCAT(id, '-', sku) AS supply_uuid,
 
         ---------- booleans
-        {{ cents_to_dollars('cost') }} as supply_cost
+        {{ cents_to_dollars('cost') }} AS supply_cost
 
-    from source
+    FROM source
 
 )
 
-select * from renamed
+SELECT * FROM renamed
