@@ -10,9 +10,9 @@
     {% elif 'staging' in node.path %}
         {{ 'staging' }}
 
-    {# marts models  go in a global `marts` schema #}
-    {% elif 'marts' in node.path %}
-        {{ 'marts' }}
+    {# marts models  go in a global `mart` schema #}
+    {% elif 'mart' in node.path %}
+        {{ 'mart' }}
 
     {# non-specified schemas go to the default target schema #}
     {% elif custom_schema_name is none %}
